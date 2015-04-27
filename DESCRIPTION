@@ -1,0 +1,12 @@
+Package: photoann
+Type: Package
+Title: A Good Title
+Version: 0.0.1.9000
+Date: 2015-04-27
+Authors@R: as.person(c(
+   "Reinard Simon <r.simon@cgiar.org> [aut, cre]",
+   "International Potato Center (CIP) [cph]"
+  ))
+Description: A thorough description
+License: MIT + file LICENSE
+Depends: R (>= 3.1.2)

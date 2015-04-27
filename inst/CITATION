@@ -1,0 +1,18 @@
+citHeader(paste0("To cite the '",meta$Package,"' package in publications use:"))
+
+year = sub('.*(2[[:digit:]]{3})-.*', '\\1', meta$Date, perl = TRUE)
+vers = paste('R package version', meta$Version)
+
+citEntry(
+  entry = 'manual',
+  title = paste0(meta$Package, ': ', meta$Title),
+  
+  author = toBibtex(Filter(function(p) 'aut' %in% p$role, as.person(meta$Author))),
+  year = year,
+  note = vers,
+  url = meta$URL,
+  textVersion = paste0(
+    toBibtex(Filter(function(p) 'aut' %in% p$role, as.person(meta$Author))), 
+    ' (', year, '). ',
+    meta$Package, ': ', meta$Title, '. ', vers, '.')
+)

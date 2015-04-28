@@ -5,7 +5,7 @@ Version: 0.0.1.9000
 Date: 2015-04-27
 Authors@R: as.person(c(
    "Mirella Flores <m.flores@cgiar.org> [aut, cre]",
-   "Alexander Vowinkel <vowinkel.alexander@gmail.com> [aut, cre]",
+   "Alexander Vowinkel <vowinkel.alexander@gmail.com> [aut]",
    "International Potato Center (CIP) [cph]"
   ))
 Description: A thorough description

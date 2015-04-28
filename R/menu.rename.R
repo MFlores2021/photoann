@@ -26,7 +26,7 @@ menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updatePr
   
   # create folder
   
-  dir_final <- file.path(fbp,part_plant) 
+  dir_final <- file.path(dir_initial, paste('renamed_', part_plant, sep = '')) 
   
   if(!file.exists(dir_final)) dir.create(dir_final, recursive = TRUE)
   
@@ -65,7 +65,7 @@ menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updatePr
       oldfiles[i] = file.verify.name(oldfiles[i])
       
       if (is.function(updateProgress)) {
-        updateProgress(value = i/length(oldfiles), detail = paste('process', oldfiles[i]))
+        updateProgress(value = i/length(oldfiles), detail = basename(oldfiles[i]))
       } 	
       
       write(basename(oldfiles[i]),file=paste(dir_final,"log.txt"),append=TRUE)

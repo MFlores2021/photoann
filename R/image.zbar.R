@@ -1,16 +1,17 @@
-image.zbar <- function (imagei){
+image.zbar <- function (imagei) {
   
   cpn = "(CIP)?[0-9@yDZO/]{6}(\\.[0-9@yDZO]{1,4})?" 
   
   tfn = paste(file.path("bin", "zxing", 'javase-3.1.0.jar'), file.path("bin", "zxing", 'core-3.1.0.jar'), sep = ':')
-  tfna = (paste('java -cp', tfn, 'com.google.zxing.client.j2se.CommandLineRunner'))
   
+  param = paste('-cp', tfn, 'com.google.zxing.client.j2se.CommandLineRunner', imagei)
   
-  cip <- system(paste(tfna,imagei), intern = TRUE) #, stdout = TRUE, stderr = FALSE) , show.output.on.console=FALSE
-  #try(A <- system2("C:\\Program Files\\ZBar\\bin\\zbarimg.exe", args=paste("-q --raw",imagei, sep = " "), stdout = TRUE, stderr = FALSE), silent = TRUE)
-  cip = str_extract(cip,cpn)
+  cip <- system2('java', param)
+  
+  cip = stringr::str_extract(cip,cpn)
   cip = cip[!is.na(cip)]
   cip = moda.cipnumber(cip)
-  
+  print(cip)
+  stop()
   return(cip)
 }

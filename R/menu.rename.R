@@ -42,9 +42,6 @@ menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updatePr
   
   if (length(oldfiles)){
     
-    # delete
-    #pb <- winProgressBar("Renaming", "Progress in %",0, 100, 1)
-    
     file.copy(file.path(dir_initial,oldfiles), dir_final)
     
     listcipn = file.path(dir_initial,'cipnumber.txt')

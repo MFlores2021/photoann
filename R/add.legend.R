@@ -5,7 +5,6 @@
 #' @param year
 #' @param author
 #' @param im
-#' @export
 #' 
 
 add.legend <- function (year,autor,im){

@@ -27,5 +27,5 @@ get_my_tempdir <- function() {
 }
 
 initialize <- function() {
-  dir.create(get_my_tempdir())
+  if(!dir.exists(get_my_tempdir())) dir.create(get_my_tempdir())
 }

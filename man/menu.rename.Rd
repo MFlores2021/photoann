@@ -4,7 +4,8 @@
 \alias{menu.rename}
 \title{menu.rename}
 \usage{
-menu.rename(dir_initial, fbp, befCIP, ppl, yeardate, autor)
+menu.rename(dir_initial, fbp, befCIP, ppl, yeardate, autor,
+  updateProgress = NULL)
 }
 \arguments{
 \item{dir_initial}{}
@@ -27,5 +28,7 @@ The typical hello world example.
 }
 \author{
 Mirella Flores
+
+Alexander Vowinkel
 }
 

@@ -10,12 +10,17 @@
 #' @param autor
 #' @return character a string; default is 'Hello, world!'
 #' @author Mirella Flores
+#' @author Alexander Vowinkel
 #' @export 
 #' 
 
-menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor) {
-  
+menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updateProgress = NULL) {
+
   initialize()
+  
+  if (is.function(updateProgress)) {
+    updateProgress(value = 0, detail = 'start renaming')
+  }
   
   part_plant = part.plant(ppl)
   
@@ -32,7 +37,7 @@ menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor) {
   
   contador <- 0
   
-  dput("List",file=paste(dir_final,"log.txt"))
+  dput("List", file = paste(dir_final,"log.txt"))
   
   
   if (length(oldfiles)){
@@ -62,7 +67,9 @@ menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor) {
       
       oldfiles[i] = file.verify.name(oldfiles[i])
       
-      print(oldfiles[i])  	
+      if (is.function(updateProgress)) {
+        updateProgress(value = i/length(oldfiles), detail = paste('process', oldfiles[i]))
+      } 	
       
       write(basename(oldfiles[i]),file=paste(dir_final,"log.txt"),append=TRUE)
       
@@ -97,14 +104,7 @@ menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor) {
       } 
       
       write("--------*--------",file=paste(dir_final,"log.txt"),append=TRUE)
-      
-      # delete
-      #setWinProgressBar(pb, round(i/length(oldfiles)*100, 0), label=paste(round(i/length(oldfiles)*100, 0),"% done"))
-      
     }
-    
-    # delete
-    #close(pb)
     
   }
   

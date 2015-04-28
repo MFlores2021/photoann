@@ -4,7 +4,7 @@ compare.result <- function(cipz,cipt,list.cip) {
   cip = NULL
   strcip = NULL
   cipnumber = NULL
-  #list.cip = str_replace_all(list.cip,"CIP","")
+  #list.cip = stringr::str_replace_all(list.cip,"CIP","")
   ciptmp=c(cipt,cipz)
   ciptmp=ciptmp[ciptmp != ""]
   

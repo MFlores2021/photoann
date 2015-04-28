@@ -13,7 +13,9 @@
 #' @export 
 #' 
 
-menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor){
+menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor) {
+  
+  initialize()
   
   part_plant = part.plant(ppl)
   
@@ -32,10 +34,11 @@ menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor){
   
   dput("List",file=paste(dir_final,"log.txt"))
   
-    
+  
   if (length(oldfiles)){
     
-    pb <- winProgressBar("Renaming", "Progress in %",0, 100, 1)
+    # delete
+    #pb <- winProgressBar("Renaming", "Progress in %",0, 100, 1)
     
     file.copy(file.path(dir_initial,oldfiles), dir_final)
     
@@ -59,7 +62,7 @@ menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor){
       
       oldfiles[i] = file.verify.name(oldfiles[i])
       
-      print(oldfiles[i])		
+      print(oldfiles[i])  	
       
       write(basename(oldfiles[i]),file=paste(dir_final,"log.txt"),append=TRUE)
       
@@ -95,16 +98,18 @@ menu.rename <- function(dir_initial,fbp,befCIP,ppl,yeardate,autor){
       
       write("--------*--------",file=paste(dir_final,"log.txt"),append=TRUE)
       
-      setWinProgressBar(pb, round(i/length(oldfiles)*100, 0), label=paste(round(i/length(oldfiles)*100, 0),"% done"))
-   
+      # delete
+      #setWinProgressBar(pb, round(i/length(oldfiles)*100, 0), label=paste(round(i/length(oldfiles)*100, 0),"% done"))
+      
     }
     
-    close(pb)
+    # delete
+    #close(pb)
     
   }
   
   msg = paste("Renamed:",contador,"files", sep = " ")
   
- # gmessage(msg,ico="info")
+  # gmessage(msg,ico="info")
   
 }

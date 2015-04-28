@@ -109,7 +109,7 @@ change.metadata <- function (img,atr,value) {
 	ep = file.path("bin","exiv2","exiv2")
 	sp1 = ' -M "set '
 	
-	img = str_replace_all(img,"\n"," ")
+	img = stringr::str_replace_all(img,"\n"," ")
 	img = paste(img, collapse = " ")
 	metadata	= paste(atr,' ',value,sep='')
 	

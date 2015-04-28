@@ -173,8 +173,12 @@ image.coordenada<-function(img,vect){
 	})
 }
 image.identify<-function(ima,prop){
-	
-	tfn = file.path ("bin","ImageMagick","identify")
+  
+  if(.Platform$OS.type == "unix") {
+    tfn = 'identify'
+  } else {
+    tfn = file.path ("bin","ImageMagick","identify")
+  }
 	
 	dim1 <- system2(tfn,args=paste("-format", prop, ima,sep = " "), stdout = TRUE)
 	#dim1<-system2("C:\\Program Files\\ImageMagick-6.5.9-Q16\\identify.exe",args=paste("-format", prop, ima,sep = " "), stdout = TRUE)
@@ -185,13 +189,17 @@ image.crop <-function(im){
 	
 	tryCatch({
 	
-	out <- file.path ("temp","output.jpg")
-	out1 <- file.path ("temp","output1.jpg")
+	out <- file.path (get_my_tempdir(),"output.jpg")
+	out1 <- file.path (get_my_tempdir(),"output1.jpg")
 	#system2("C:\\Program Files\\ImageMagick-6.5.9-Q16\\convert.exe",args=paste("-resample 20",im,o, sep = " "), stdout = TRUE)
 	
 	# resize image < 300 kb
 	
-	tfn = file.path ("bin","ImageMagick","convert")
+	if(.Platform$OS.type == "unix") {
+	  tfn = 'convert'
+	} else {
+	  tfn = file.path ("bin","ImageMagick","convert")
+	}
 	#tryCatch(system2(tfn,args=paste("-crop 0x1500+0+4000",im,out1, sep = " "), stdout = TRUE), error = function(cond)NA ) 
 	#system2("C:\\Program Files\\ImageMagick-6.5.9-Q16\\convert.exe",args=paste("-resize 400000@",im,o, sep = " "), stdout = TRUE)
 	
@@ -277,7 +285,7 @@ image.crop <-function(im){
 		}
 	}
 	}
-	if(file.exists(file.path ('temp','output.jpg'))) file.remove(file.path ('temp','output.jpg'))
+	if(file.exists(file.path (get_my_tempdir(), 'output.jpg'))) file.remove(file.path (get_my_tempdir(),'output.jpg'))
 	
 	}, error = function(err) {return(NULL)})
 }
@@ -303,7 +311,11 @@ add.legend <- function (year,autor,im){
 	}
 	
 	point = h*0.96
-	tfn = file.path ("bin","ImageMagick","convert")
+	if(.Platform$OS.type == "unix") {
+	  tfn = 'convert'
+	} else {
+	  tfn = file.path ("bin","ImageMagick","convert")
+	}
 	txt = paste('" ©Copyright ',year,' International Potato Center.\n ',str_autor,autor,' "',sep='')
 	tryCatch(system2(tfn,args=paste("-pointsize ", point_size," -annotate +1+",point," ",txt," ",im," ",im, sep = ""), stdout = TRUE), error = function(cond)NA ) 
 

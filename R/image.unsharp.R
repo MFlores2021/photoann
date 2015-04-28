@@ -1,9 +1,15 @@
 
 image.unsharp <- function (imagei,params){
   
-  tmpfile <- file.path('temp',"unsharped.jpg")
+  tmpfile <- file.path(get_my_tempdir(), "unsharped.jpg")
   
-  tfn = file.path ("bin","ImageMagick","convert")
+  if(.Platform$OS.type == "unix") {
+    tfn = 'convert'
+  } else {
+    tfn = file.path ("bin","ImageMagick","convert")
+  }
+  
+  print("TEST", paste(params,imagei, tmpfile, sep = " "))
   
   system2(tfn, args=paste(params,imagei, tmpfile, sep = " "), stdout = TRUE, stderr = FALSE)
   

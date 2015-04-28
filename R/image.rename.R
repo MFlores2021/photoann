@@ -1,13 +1,13 @@
 
 image.rename <- function(oldfilesi,filecip){
   
-  tmpfile     =  file.path('temp','unsharped.jpg')
+  tmpfile     =  file.path(get_my_tempdir(), 'unsharped.jpg')
   
   file_exists = list.files(".", pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp")
   
   tryCatch(image.crop(oldfilesi), error = function(err) {return(NULL)})
   
-  labelfiles = file.path('temp',list.files('temp', pattern = ".new.jpg"))
+  labelfiles = file.path(get_my_tempdir(), list.files(get_my_tempdir(), pattern = ".new.jpg"))
   
   if(!length(labelfiles)) labelfiles=oldfilesi
   
@@ -31,7 +31,7 @@ image.rename <- function(oldfilesi,filecip){
           
           CIPZ = c(Z,CIPZ) 					
           
-          file.remove(list.files("temp", pattern = ".new.jpg", full.names = TRUE))
+          file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
           
           break
         }
@@ -58,7 +58,7 @@ image.rename <- function(oldfilesi,filecip){
               
               CIPZ = c(Z,CIPZ) 					
               
-              file.remove(list.files("temp", pattern = ".new.jpg", full.names = TRUE))
+              file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
              
               break
               
@@ -86,7 +86,7 @@ image.rename <- function(oldfilesi,filecip){
                 
                 CIPZ = c(Z,CIPZ) 		
                 
-                file.remove(list.files("temp", pattern = ".new.jpg", full.names = TRUE))
+                file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
                 
                 break
                 
@@ -137,7 +137,7 @@ image.rename <- function(oldfilesi,filecip){
     
     if(length(CIPN) || !(is.null(CIPN))){
       
-      CIPN = str_replace_all(CIPN,"CIP","")
+      CIPN = stringr::str_replace_all(CIPN,"CIP","")
       
       cipnumber <-paste("CIP", CIPN, sep="")
       
@@ -149,7 +149,7 @@ image.rename <- function(oldfilesi,filecip){
   
   file.remove(list.files("temp", pattern = ".jpg", full.names = TRUE))
   
-  cipnumber = str_replace_all(cipnumber,"CIP","")
+  cipnumber = stringr::str_replace_all(cipnumber,"CIP","")
   
   return (cipnumber)
   

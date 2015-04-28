@@ -21,3 +21,11 @@ pkg.env$organisms <-
 get_organisms <- function() {
   pkg.env$organisms
 }
+
+get_my_tempdir <- function() {
+  file.path(tempdir(), 'photoann')
+}
+
+initialize <- function() {
+  dir.create(get_my_tempdir())
+}

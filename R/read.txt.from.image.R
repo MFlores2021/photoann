@@ -1,7 +1,7 @@
 
 read.txt.from.image <- function(fp){
   
-  tmpfile <- file.path('temp','unsharped.jpg.txt')
+  tmpfile <- file.path(get_my_tempdir, 'unsharped.jpg.txt')
   
   if(file.exists(tmpfile)) file.remove(tmpfile)
   

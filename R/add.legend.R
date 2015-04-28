@@ -39,7 +39,11 @@ add.legend <- function (year,autor,im){
   
   point = h*0.96
   
-  tfn = file.path ("bin","ImageMagick","convert")
+  if(.Platform$OS.type == "unix") {
+    tfn = 'convert'
+  } else {
+    tfn = file.path ("bin","ImageMagick","convert")
+  }
   
   txt = paste('" ?Copyright 2015 International Potato Center.\n ',str_autor,autor,' "',sep='')
   

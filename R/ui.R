@@ -1,6 +1,6 @@
 library(shiny)
 
-source('environment.R')
+#source('environment.R')
 
 # Define page, able to be included in other shiny application
 ui_get_page <- function() {

@@ -4,7 +4,8 @@ Title: A Good Title
 Version: 0.0.1.9000
 Date: 2015-04-27
 Authors@R: as.person(c(
-   "Reinard Simon <r.simon@cgiar.org> [aut, cre]",
+   "Mirella Flores <m.flores@cgiar.org> [aut, cre]",
+   "Alexander Vowinkel <vowinkel.alexander@gmail.com> [aut, cre]",
    "International Potato Center (CIP) [cph]"
   ))
 Description: A thorough description

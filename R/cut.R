@@ -304,7 +304,7 @@ add.legend <- function (year,autor,im){
 	
 	point = h*0.96
 	tfn = file.path ("bin","ImageMagick","convert")
-	txt = paste('" ©Copyright ',year,' International Potato Center.\n ',str_autor,autor,' "',sep='')
+	txt = paste('" Â©Copyright ',year,' International Potato Center.\n ',str_autor,autor,' "',sep='')
 	tryCatch(system2(tfn,args=paste("-pointsize ", point_size," -annotate +1+",point," ",txt," ",im," ",im, sep = ""), stdout = TRUE), error = function(cond)NA ) 
 
 }

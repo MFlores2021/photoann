@@ -12,7 +12,7 @@ library(shiny)
 ui_get_page <- function() {
   fluidPage(
     
-    img(src = 'potato.gif', align = "center"),
+    img(src = 'photoann/potato.gif', align = "center"),
     
     hr(),
     

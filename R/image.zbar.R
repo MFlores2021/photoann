@@ -15,14 +15,3 @@ image.zbar <- function (imagei) {
   }
   cip
 }
-
-get_package_root <- function() {
-  pck_data <- installed.packages()[, c("Package", "Version", "LibPath")]
-  pck <- pck_data[pck_data[,1] == 'photoann']
-  if(!is.null(dim(pck))) {
-    pck_version <- sessionInfo()[[6]][['photoann']][['Version']]
-    pck <- pck[pck[,2] == pck_version,]
-    pck <- pck[1,]
-  }
-  file.path(pck[3], 'photoann')
-}

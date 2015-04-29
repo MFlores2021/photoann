@@ -9,7 +9,7 @@ read.txt.from.image <- function(fp){
   if(.Platform$OS.type == "unix") {
     tfn = 'tesseract'
   } else {
-    tfn = file.path ("bin","tesseract","tesseract")
+    tfn = file.path (get_package_root(), "bin","tesseract","tesseract")
   }
   
   cmd = paste(tfn,fp,fp)

@@ -1,13 +1,14 @@
 
 add.metadata <- function (file,img,mdata,nplot,keys,catalog) {
+  library(stringr)
 # change copyright
 		
 	ep = file.path("bin","exiv2","exiv2")
 	sp1 = ' -M "set '
 	sp = '" -M "set '
 
-	if(is.na(mdata[2]) || str_trim(mdata[2]) == '') mdata[2]=0.0001
-	if(is.na(mdata[3]) || str_trim(mdata[3]) == '') mdata[3]=0.0001
+	if(is.na(mdata[2]) || stringr::str_trim(mdata[2]) == '') mdata[2]=0.0001
+	if(is.na(mdata[3]) || stringr::str_trim(mdata[3]) == '') mdata[3]=0.0001
 
 	gps_lat = to_deg(mdata[2],c("S", "N")) 
 	gps_lng = to_deg(mdata[3],c("W", "E")) 
@@ -35,12 +36,12 @@ add.metadata <- function (file,img,mdata,nplot,keys,catalog) {
 	catalogue	= paste('Xmp.dc.catalogue ',catalog)
 	
 	cmd = paste(ep,sp1,autorxp,sp,titl,sp,key,sp,comm,sp,latitude,sp,latitude_ref,sp,longitude,sp,longitude_ref,sp,copyright,sp,titles,sp,country,sp,plots,sp,autors,sp,gps_lat,sp,gps_lng,sp,catalogue,sp,exp,'" ',file,sep='')
-	print(cmd)
 	try(system(cmd,ignore.stdout = FALSE), silent = TRUE)
 	
 }
 
 read.xls <- function (xls,t_sheet,cipnumber){
+  library(stringr)
 	
 	wb  	<- loadWorkbook(xls)
 	sheets	<- getSheets(wb)
@@ -69,7 +70,7 @@ get.row.value <- function(aname,sheet,col,valuecol){
 	
 	v = readColumns(sheet,1,m,1,n)
 	df = as.data.frame(v[,col],stringsAsFa=F)
-	res = which(str_detect(df[,1],aname))[1]
+	res = which(stringr::str_detect(df[,1],aname))[1]
 	res = toString(v[res,valuecol])
 	return(res)
 }
@@ -215,7 +216,7 @@ metadata.by.image.Dlg = function(w){
 				
 				add.metadata(file,img,mdata,nplot,keys,catalogue)
 					
-			titl=paste(str_replace(file,basename(file),""),titl,'.',image.typefile(file),sep='')
+			titl=paste(stringr::str_replace(file,basename(file),""),titl,'.',image.typefile(file),sep='')
 			file.rename(file,titl)
 			
 				dput(out,file=tmp)
@@ -333,7 +334,7 @@ get.path.image = function(book,ppl){
 	
 	if (length(book) && book!='' ){
 		year_m = "20[0-9]{4}" 
-		dir_date <- str_extract(book,year_m)
+		dir_date <- stringr::str_extract(book,year_m)
 		if(ppl!=''){
 			  folder = file.path(getwd(),'data',getCurrentCrop(),dir_date,book,part.plant(ppl),'.')
 		}else folder = file.path(getwd(),'data',getCurrentCrop(),dir_date,book,'.')
@@ -348,8 +349,12 @@ get.path.image = function(book,ppl){
 }
 
 read.one.metadata <- function (metadata,img){
-	
-	ep = file.path("bin","exiv2","exiv2")
+  
+  if(.Platform$OS.type == "unix") {
+    ep = 'identify'
+  } else {
+    ep = file.path ('bin', "ImageMagick","identify")
+  }
 		
 	cmd = paste(' -g ',metadata,' -Pv ',img,sep='')
 	
@@ -365,13 +370,13 @@ change.metadata.title <- function (w){
 				res = change.metadata.title.Dlg(w)
 				if(length(res)>1) {
 					for(i in 1:length(res)) {
-					change.metadata(res[i],'Xmp.dc.title XmpText',str_replace(basename(res[i]),".png",""))
-					change.metadata(res[i],'Exif.Image.XPTitle Ascii',str_replace(basename(res[i]),".png",""))
+					change.metadata(res[i],'Xmp.dc.title XmpText',stringr::str_replace(basename(res[i]),".png",""))
+					change.metadata(res[i],'Exif.Image.XPTitle Ascii',stringr::str_replace(basename(res[i]),".png",""))
 				}
 			}
 				else if (res!=out) {
-					change.metadata(res,'Xmp.dc.title XmpText',str_replace(basename(res),".png",""))
-					change.metadata(res,'Exif.Image.XPTitle Ascii',str_replace(basename(res),".png",""))
+					change.metadata(res,'Xmp.dc.title XmpText',stringr::str_replace(basename(res),".png",""))
+					change.metadata(res,'Exif.Image.XPTitle Ascii',stringr::str_replace(basename(res),".png",""))
 			}
 			}, error=function(cond) NA )
 }

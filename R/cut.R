@@ -5,10 +5,9 @@
 # (c) International Potato Center
 #
 ###############################################################################
-if(!require('EBImage', character.only=TRUE)) install.packages('bin/EBImage.zip',repos=NULL)
-library(EBImage)
 
 morpho <- function(i){
+  library(EBImage)
 	
 	tryCatch({
 # deteccion de objetos
@@ -101,10 +100,6 @@ morpho <- function(i){
 			colnames(ch2)=c('s.perimeter','m.cx','m.cy')
 			res=cbind(ch,ch1,ch2)
 			n=nrow(ch)
-			#cat('number of objects=',n,'\n')
-			#cat('features:','\n')
-			#display(ptx)
-			#print(n)
 			res=list(res,sto,sto,n)
 			
 			return(res)
@@ -114,6 +109,8 @@ morpho <- function(i){
 	
 }
 imagen.pto.initial <- function(oc,pto2,ch,im,dimens,i,coord){
+  
+  library('EBImage')
 
 	tryCatch({
 	
@@ -144,6 +141,8 @@ imagen.pto.initial <- function(oc,pto2,ch,im,dimens,i,coord){
 }
 
 image.coordenada<-function(img,vect){
+  
+  library('EBImage')
 	#analisis del objeto seleccionado
 	tryCatch({
 	dist=matrix(0,length(vect),11)
@@ -174,6 +173,8 @@ image.coordenada<-function(img,vect){
 }
 image.identify<-function(ima,prop){
   
+  library('EBImage')
+  
   if(.Platform$OS.type == "unix") {
     tfn = 'identify'
   } else {
@@ -186,13 +187,15 @@ image.identify<-function(ima,prop){
 }
 
 image.crop <-function(im){
+  
+  library('EBImage')
 	
 	tryCatch({
 	
 	out <- file.path (get_my_tempdir(),"output.jpg")
 	out1 <- file.path (get_my_tempdir(),"output1.jpg")
 	#system2("C:\\Program Files\\ImageMagick-6.5.9-Q16\\convert.exe",args=paste("-resample 20",im,o, sep = " "), stdout = TRUE)
-	
+
 	# resize image < 300 kb
 	
 	if(.Platform$OS.type == "unix") {
@@ -203,15 +206,14 @@ image.crop <-function(im){
 	#tryCatch(system2(tfn,args=paste("-crop 0x1500+0+4000",im,out1, sep = " "), stdout = TRUE), error = function(cond)NA ) 
 	#system2("C:\\Program Files\\ImageMagick-6.5.9-Q16\\convert.exe",args=paste("-resize 400000@",im,o, sep = " "), stdout = TRUE)
 	
-	
 	system2(tfn,args=paste("-resize 400000@",im,out, sep = " "), stdout = TRUE)
 	#tryCatch(system2(tfn,args=paste("-resize 400000@",im,out, sep = " "), stdout = TRUE), error = function(cond)NA ) 
-	if (file.exists(out)){
-	i = readImage(out)
+	
+  if (file.exists(out)){
+	i = EBImage::readImage(out)
 
 	# call to main function for detect objects
 	morp = morpho(i)
-	#print(morp)
 	# for display image: display(morp[[2]])
 	
 	# number of objects
@@ -288,36 +290,5 @@ image.crop <-function(im){
 	if(file.exists(file.path (get_my_tempdir(), 'output.jpg'))) file.remove(file.path (get_my_tempdir(),'output.jpg'))
 	
 	}, error = function(err) {return(NULL)})
-}
-
-add.legend <- function (year,autor,im){
-	
-	h=as.numeric(image.identify(im,'%h')) 
-
-	w=as.numeric(image.identify(im,'%w')) 
-	numberautor <- do.call(rbind, strsplit(autor,"\\,"))
-
-	if ((length(numberautor))>1){
-		str_autor = "Authors:"
-	}	
-	else str_autor = "Author:"
-	if(w>h){
-	
-		point_size = round(as.numeric(w*0.01))
-	}
-	else{
-	
-		point_size = round(as.numeric(h*0.01))
-	}
-	
-	point = h*0.96
-	if(.Platform$OS.type == "unix") {
-	  tfn = 'convert'
-	} else {
-	  tfn = file.path ("bin","ImageMagick","convert")
-	}
-	txt = paste('" ©Copyright ',year,' International Potato Center.\n ',str_autor,autor,' "',sep='')
-	tryCatch(system2(tfn,args=paste("-pointsize ", point_size," -annotate +1+",point," ",txt," ",im," ",im, sep = ""), stdout = TRUE), error = function(cond)NA ) 
-
 }
 

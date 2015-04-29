@@ -1,12 +1,16 @@
 
 read.txt.from.image <- function(fp){
   
-  tmpfile <- file.path(get_my_tempdir, 'unsharped.jpg.txt')
+  tmpfile <- file.path(get_my_tempdir(), 'unsharped.jpg.txt')
   
   if(file.exists(tmpfile)) file.remove(tmpfile)
   
   #call tesseract via command line from R
-  tfn = file.path ("bin","tesseract","tesseract")
+  if(.Platform$OS.type == "unix") {
+    tfn = 'tesseract'
+  } else {
+    tfn = file.path ("bin","tesseract","tesseract")
+  }
   
   cmd = paste(tfn,fp,fp)
   

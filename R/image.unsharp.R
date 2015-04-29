@@ -6,10 +6,8 @@ image.unsharp <- function (imagei,params){
   if(.Platform$OS.type == "unix") {
     tfn = 'convert'
   } else {
-    tfn = file.path ("bin","ImageMagick","convert")
+    tfn = file.path ("bin", "ImageMagick", "convert")
   }
-  
-  print("TEST", paste(params,imagei, tmpfile, sep = " "))
   
   system2(tfn, args=paste(params,imagei, tmpfile, sep = " "), stdout = TRUE, stderr = FALSE)
   

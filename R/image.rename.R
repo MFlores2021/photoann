@@ -3,8 +3,6 @@ image.rename <- function(oldfilesi,filecip){
   
   tmpfile     =  file.path(get_my_tempdir(), 'unsharped.jpg')
   
-  file_exists = list.files(".", pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp")
-  
   tryCatch(image.crop(oldfilesi), error = function(err) {return(NULL)})
   
   labelfiles = file.path(get_my_tempdir(), list.files(get_my_tempdir(), pattern = ".new.jpg"))
@@ -21,129 +19,98 @@ image.rename <- function(oldfilesi,filecip){
   
   for(x in 1:length(labelfiles)){
     
-    tryCatch({		
+    if(is.null(CIPZ)){
       
-      if(is.null(CIPZ)){
+      Z <- image.zbar(labelfiles[x])
+      
+      if (Z != '' && length(Z)) {
         
-        Z <- image.zbar(labelfiles[x])
+        CIPZ = c(Z,CIPZ)
         
-        if (Z != '' && length(Z)) {
+        file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
+        
+        break
+      }
+      
+      T <- read.cipnumber.from.image(labelfiles[x])
+      if (T != '' && length(T)){
+        CIPT = c(CIPT,T) 	
+      }
+      
+      if(is.null(CIPZ)) {
+        params = "-unsharp 6x3"
+        image.unsharp(labelfiles[x],params)
+        
+        if(file.exists(tmpfile)) {
+          Z <- image.zbar(tmpfile)
           
-          CIPZ = c(Z,CIPZ) 					
+          if (Z != '' && length(Z)) {
+            CIPZ = c(Z,CIPZ) 				
+            file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
+            break
+          }
+          T <- read.cipnumber.from.image(tmpfile)
           
-          file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
-          
-          break
+          if (T != '' && length(T))	CIPT = c(CIPT,T) 	
+          file.remove(tmpfile)
         }
         
-        T <- read.cipnumber.from.image(labelfiles[x])
-        
-        if (T != '' && length(T)){
-          
-          CIPT = c(CIPT,T) 	
-          
-        }					
-        
-        if(is.null(CIPZ)){
-          
-          params = "-unsharp 6x3"
-          
+        if(is.null(CIPZ)) {
+          params = "-unsharp 3x1+7"
           image.unsharp(labelfiles[x],params)
           
-          if(file.exists(tmpfile)){			
+          if(file.exists(tmpfile)) {
             
             Z <- image.zbar(tmpfile)
             
             if (Z != '' && length(Z)) {
-              
-              CIPZ = c(Z,CIPZ) 					
-              
+              CIPZ = c(Z,CIPZ)
               file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
-             
               break
-              
             }
-            
             T <- read.cipnumber.from.image(tmpfile)
             
-            if (T != '' && length(T))	CIPT = c(CIPT,T) 	
-            
+            if (T != '' && length(T))	CIPT = c(CIPT,T)
             file.remove(tmpfile)
-            
-          }				
-          
-          if(is.null(CIPZ)){
-            
-            params = "-unsharp 3x1+7"
-            
-            image.unsharp(labelfiles[x],params)
-            
-            if(file.exists(tmpfile)){						
-              
-              Z <- image.zbar(tmpfile)	
-              
-              if (Z != '' && length(Z)) {
-                
-                CIPZ = c(Z,CIPZ) 		
-                
-                file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
-                
-                break
-                
-              } 							
-              
-              T <- read.cipnumber.from.image(tmpfile)
-              
-              if (T != '' && length(T))	CIPT = c(CIPT,T) 		
-              
-              file.remove(tmpfile)
-              
-            }
-            
-          }}
-      }						
-      
-    }, error=function(cond) NA )
+          }
+        }
+      }
+    }
     
     if(labelfiles[x]!=oldfilesi)	file.remove(labelfiles[x])
     
-  } 
+  }
   
+  CIPN = CIPZ
   
-  tryCatch({
+  if (!length(CIPN) || is.null(CIPN)){
     
-    CIPN = CIPZ
+    Z <- image.zbar(oldfilesi)		
     
-    if (!length(CIPN) || is.null(CIPN)){
-      
-      Z <- image.zbar(oldfilesi)		
-      
-      if (Z != '' && length(Z)){
-        CIPN = Z 				
-      }
-      
-      if (!length(CIPN) || is.null(CIPN)){				
-        
-        T <- read.cipnumber.from.image(oldfilesi)		
-        
-        if (T != '' && length(T)){
-          CIPT = c(CIPT,T)							
-        }
-        
-        CIPN = compare.result(CIPZ,CIPT,filecip)						
-        
-      }
+    if (Z != '' && length(Z)){
+      CIPN = Z 				
     }
     
-    if(length(CIPN) || !(is.null(CIPN))){
+    if (!length(CIPN) || is.null(CIPN)){				
       
-      CIPN = stringr::str_replace_all(CIPN,"CIP","")
+      T <- read.cipnumber.from.image(oldfilesi)		
       
-      cipnumber <-paste("CIP", CIPN, sep="")
+      if (T != '' && length(T)){
+        CIPT = c(CIPT,T)							
+      }
+      
+      CIPN = compare.result(CIPZ,CIPT,filecip)						
       
     }
+  }
+  
+  if(length(CIPN) || !(is.null(CIPN))){
     
-  }, error=function(cond) NA )
+    CIPN = stringr::str_replace_all(CIPN,"CIP","")
+    
+    cipnumber <-paste("CIP", CIPN, sep="")
+    
+  }
   
   if(file.exists(tmpfile)) file.remove(tmpfile)
   

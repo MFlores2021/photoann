@@ -28,4 +28,8 @@ get_my_tempdir <- function() {
 
 initialize <- function() {
   if(!dir.exists(get_my_tempdir())) dir.create(get_my_tempdir())
+  
+  if(.Platform$OS.type == "windows") {
+    .Platform$file.sep = '\\'
+  }
 }

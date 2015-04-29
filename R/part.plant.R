@@ -1,5 +1,6 @@
 
 part.plant <- function (p){
+  
   if (p == 'plant') return('p') 
   if (p == 'flower') return('fl') 
   if (p == 'flower dissection') return('df') 
@@ -12,4 +13,5 @@ part.plant <- function (p){
   if (p == 'habitat') return('hb')
   if (p == 'foliage') return('f') 
   if (p == 'Other') return('') 
+  
 }

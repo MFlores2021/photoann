@@ -9,9 +9,14 @@ image.zbar <- function (imagei) {
   cip <- system2('java', param, stdout = TRUE)
   
   cip = stringr::str_extract(cip,cpn)
+  
   cip = cip[!is.na(cip)]
+  
   if(length(cip[!is.na(cip)]) > 0) {
+    
     cip = moda.cipnumber(cip)
+    
   }
+  
   cip
 }

@@ -5,9 +5,11 @@ read.txt.from.image <- function(fp){
   
   if(file.exists(tmpfile)) file.remove(tmpfile)
   
-  #call tesseract via command line from R
-  if(.Platform$OS.type == "unix") {
-    tfn = 'tesseract'
+  
+  #call tesseract 
+  
+  if(.Platform$OS.type == "unix") {    
+    tfn = 'tesseract'    
   } else {
     tfn = file.path (get_package_root(), "bin","tesseract","tesseract")
   }
@@ -16,9 +18,11 @@ read.txt.from.image <- function(fp){
   
   system(cmd,ignore.stdout = TRUE,show.output.on.console = FALSE)
   
+  
   #read archive (several lines)
   
   txt = readLines(paste(fp,".txt",sep=""))
+  
   
   #just make one string out of it separating former lines with ;
   
@@ -27,4 +31,5 @@ read.txt.from.image <- function(fp){
   file.remove(paste(fp,".txt", sep = ""))
 
   return(txt)  
+  
 }

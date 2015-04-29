@@ -24,6 +24,7 @@ menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updatePr
   
   part_plant = part.plant(ppl)
   
+  
   # create folder
   
   dir_final <- file.path(dir_initial, paste('renamed_', part_plant, sep = '')) 
@@ -73,20 +74,16 @@ menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updatePr
       CIPN <- image.rename(oldfiles[i],listcipn)
       
       
-      if (length(CIPN)){				
-        
-        #CIPN	= image.name(CIPN)
-        
+      if (length(CIPN)){			        
+           
         file_exists = file.path(dir_final,list.files(dir_final, pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp"))
         
         count=2
         
         new_name = file.path(dir_final,paste(befCIP,CIPN,yeardate,part_plant,'.jpg',sep=''))
         
-        while(new_name %in% file_exists){ 		
-          
+        while(new_name %in% file_exists){ 		          
           new_name = file.path(dir_final,paste(befCIP,CIPN,yeardate,part_plant,count,'.jpg',sep=''))
-          
           count=count+1
         }
         
@@ -104,9 +101,5 @@ menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updatePr
     }
     
   }
-  
-  msg = paste("Renamed:",contador,"files", sep = " ")
-  
-  # gmessage(msg,ico="info")
   
 }

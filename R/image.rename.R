@@ -33,30 +33,44 @@ image.rename <- function(oldfilesi,filecip){
       }
       
       T <- read.cipnumber.from.image(labelfiles[x])
+      
       if (T != '' && length(T)){
+        
         CIPT = c(CIPT,T) 	
+        
       }
       
       if(is.null(CIPZ)) {
+        
         params = "-unsharp 6x3"
+        
         image.unsharp(labelfiles[x],params)
         
         if(file.exists(tmpfile)) {
+          
           Z <- image.zbar(tmpfile)
           
           if (Z != '' && length(Z)) {
+            
             CIPZ = c(Z,CIPZ) 				
+            
             file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
+            
             break
           }
+          
           T <- read.cipnumber.from.image(tmpfile)
           
           if (T != '' && length(T))	CIPT = c(CIPT,T) 	
+          
           file.remove(tmpfile)
+          
         }
         
         if(is.null(CIPZ)) {
+          
           params = "-unsharp 3x1+7"
+          
           image.unsharp(labelfiles[x],params)
           
           if(file.exists(tmpfile)) {
@@ -64,13 +78,18 @@ image.rename <- function(oldfilesi,filecip){
             Z <- image.zbar(tmpfile)
             
             if (Z != '' && length(Z)) {
+              
               CIPZ = c(Z,CIPZ)
+              
               file.remove(list.files(get_my_tempdir(), pattern = ".new.jpg", full.names = TRUE))
+             
               break
             }
+            
             T <- read.cipnumber.from.image(tmpfile)
             
             if (T != '' && length(T))	CIPT = c(CIPT,T)
+            
             file.remove(tmpfile)
           }
         }
@@ -88,7 +107,9 @@ image.rename <- function(oldfilesi,filecip){
     Z <- image.zbar(oldfilesi)		
     
     if (Z != '' && length(Z)){
-      CIPN = Z 				
+      
+      CIPN = Z 			
+      
     }
     
     if (!length(CIPN) || is.null(CIPN)){				
@@ -96,7 +117,9 @@ image.rename <- function(oldfilesi,filecip){
       T <- read.cipnumber.from.image(oldfilesi)		
       
       if (T != '' && length(T)){
-        CIPT = c(CIPT,T)							
+        
+        CIPT = c(CIPT,T)				
+        
       }
       
       CIPN = compare.result(CIPZ,CIPT,filecip)						

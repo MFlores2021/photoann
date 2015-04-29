@@ -7,30 +7,29 @@
 ###############################################################################
 
 morpho <- function(i){
-  library(EBImage)
 	
 	tryCatch({
 # deteccion de objetos
 	
 	#pth=thresh(i[,,1],15,15,0.05175) 	#compara intensidad de pixeles
 	#kern=makeBrush(5, shape=c('disc'), step=FALSE)^2 
-	pth=thresh(i[,,1],5,5,0.0175) 	#compara intensidad de pixeles
-	kern=makeBrush(5, shape=c('disc'), step=FALSE)^2 
-	pf=closing(dilate(pth, kern), kern)  #pf=closing(erode(dilate(pth, kern), kern), kern)
-	pfh=fillHull(pf)
+	pth=EBImage::thresh(i[,,1],5,5,0.0175) 	#compara intensidad de pixeles
+	kern=EBImage::makeBrush(5, shape=c('disc'), step=FALSE)^2 
+	pf=EBImage:::closing(EBImage:dilate(pth, kern), kern)  #pf=closing(erode(dilate(pth, kern), kern), kern)
+	pfh=EBImage::fillHull(pf)
 	##
 
 #display(pfh)
 #conteo de objetos
 	
-	nobj=bwlabel(pfh)
+	nobj=EBImage::bwlabel(pfh)
 	
 #eliminacion de objetos insignificantes
 	
-	pp=computeFeatures.shape(nobj)[,'s.area']
+	pp=EBImage::computeFeatures.shape(nobj)[,'s.area']
 	
 	id = which(pp<50) #mayores k
-	rm=rmObjects(nobj,id)
+	rm=EBImage::rmObjects(nobj,id)
 	# id = which(pp<2000) #mayores k
 	# rm=rmObjects(nobj,id)
 	
@@ -51,15 +50,15 @@ morpho <- function(i){
 	}else{
 		
 		#marcado de objetos reconocidos
-		colorMode(rm2)=Grayscale
-		sto=stackObjects(rm2,i)
-		obj= paintObjects(rm2, i, col='red')
+		colorMode(rm2)=EBImage::Grayscale
+		sto=EBImage::stackObjects(rm2,i)
+		obj= EBImage::paintObjects(rm2, i, col='red')
 		
 		#caracterizacion de objetos
-		oc=ocontour(rm2)
+		oc=EBImage::ocontour(rm2)
 		#pp=computeFeatures.shape(rm)[,c('m.cx','m.cy','s.area','s.perimeter','m.cx','m.cy')] #puntos de los obj reconocidos
-		pp=computeFeatures.moment(rm2)[,c('m.cx','m.cy')]
-		pp=cbind(pp, computeFeatures.shape(rm)[,c('s.area','s.perimeter')] , pp)
+		pp=EBImage::computeFeatures.moment(rm2)[,c('m.cx','m.cy')]
+		pp=cbind(pp, EBImage::computeFeatures.shape(rm)[,c('s.area','s.perimeter')] , pp)
 	#display(obj)
 		#font=drawfont(weight=600, size=16)
 		
@@ -109,8 +108,6 @@ morpho <- function(i){
 	
 }
 imagen.pto.initial <- function(oc,pto2,ch,im,dimens,i,coord){
-  
-  library('EBImage')
 
 	tryCatch({
 	
@@ -141,8 +138,6 @@ imagen.pto.initial <- function(oc,pto2,ch,im,dimens,i,coord){
 }
 
 image.coordenada<-function(img,vect){
-  
-  library('EBImage')
 	#analisis del objeto seleccionado
 	tryCatch({
 	dist=matrix(0,length(vect),11)
@@ -150,15 +145,15 @@ image.coordenada<-function(img,vect){
 	for(k in vect){
 		#deteccion
 		x=img[[1]][,,,k]
-		pth1=thresh(x[,,1],15,15,0.005)
-		kern=makeBrush(13,shape='disc')
-		pf1=closing(pth1,kern)
-		pf1=fillHull(pf1)
-		colorMode(pf1)=Grayscale
-		ob1=bwlabel(pf1)
-		oc=ocontour(pf1)
+		pth1=EBImage::thresh(x[,,1],15,15,0.005)
+		kern=EBImage::makeBrush(13,shape='disc')
+		pf1=EBImage::closing(pth1,kern)
+		pf1=EBImage::fillHull(pf1)
+		colorMode(pf1)=EBImage::Grayscale
+		ob1=EBImage::bwlabel(pf1)
+		oc=EBImage::ocontour(pf1)
 	
-		ch=computeFeatures.moment(pf1)[,c('m.cx','m.cy')]
+		ch=EBImage::computeFeatures.moment(pf1)[,c('m.cx','m.cy')]
 		
 		ch=round(ch)
 		
@@ -173,12 +168,10 @@ image.coordenada<-function(img,vect){
 }
 image.identify<-function(ima,prop){
   
-  library('EBImage')
-  
   if(.Platform$OS.type == "unix") {
     tfn = 'identify'
   } else {
-    tfn = file.path ("bin","ImageMagick","identify")
+    tfn = file.path (get_package_root(), "bin","ImageMagick","identify")
   }
 	
 	dim1 <- system2(tfn,args=paste("-format", prop, ima,sep = " "), stdout = TRUE)
@@ -187,8 +180,6 @@ image.identify<-function(ima,prop){
 }
 
 image.crop <-function(im){
-  
-  library('EBImage')
 	
 	tryCatch({
 	
@@ -201,7 +192,7 @@ image.crop <-function(im){
 	if(.Platform$OS.type == "unix") {
 	  tfn = 'convert'
 	} else {
-	  tfn = file.path ("bin","ImageMagick","convert")
+	  tfn = file.path (get_package_root(), "bin","ImageMagick","convert")
 	}
 	#tryCatch(system2(tfn,args=paste("-crop 0x1500+0+4000",im,out1, sep = " "), stdout = TRUE), error = function(cond)NA ) 
 	#system2("C:\\Program Files\\ImageMagick-6.5.9-Q16\\convert.exe",args=paste("-resize 400000@",im,o, sep = " "), stdout = TRUE)

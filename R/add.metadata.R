@@ -1,9 +1,8 @@
 
 add.metadata <- function (file,img,mdata,nplot,keys,catalog) {
-  library(stringr)
 # change copyright
 		
-	ep = file.path("bin","exiv2","exiv2")
+	ep = file.path(get_package_root(), "bin","exiv2","exiv2")
 	sp1 = ' -M "set '
 	sp = '" -M "set '
 
@@ -41,7 +40,6 @@ add.metadata <- function (file,img,mdata,nplot,keys,catalog) {
 }
 
 read.xls <- function (xls,t_sheet,cipnumber){
-  library(stringr)
 	
 	wb  	<- loadWorkbook(xls)
 	sheets	<- getSheets(wb)
@@ -107,7 +105,7 @@ select.image.catalogue <- function (w){
 }
 change.metadata <- function (img,atr,value) {
 	
-	ep = file.path("bin","exiv2","exiv2")
+	ep = file.path(get_package_root(), "bin","exiv2","exiv2")
 	sp1 = ' -M "set '
 	
 	img = stringr::str_replace_all(img,"\n"," ")
@@ -353,7 +351,7 @@ read.one.metadata <- function (metadata,img){
   if(.Platform$OS.type == "unix") {
     ep = 'identify'
   } else {
-    ep = file.path ('bin', "ImageMagick","identify")
+    ep = file.path (get_package_root(), 'bin', "ImageMagick","identify")
   }
 		
 	cmd = paste(' -g ',metadata,' -Pv ',img,sep='')

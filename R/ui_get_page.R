@@ -12,12 +12,8 @@ library(shiny)
 ui_get_page <- function() {
   fluidPage(
     
-    img(src = 'photoann/potato.gif', align = "center"),
-    
-    hr(),
-    
     fluidRow(
-      column(12,
+      column(6,
              
              h1("PhotoAnnotator"),
              
@@ -32,8 +28,16 @@ ui_get_page <- function() {
              textInput('directory', label = 'Image directory', value = '/home/kaktus42/Schreibtisch/test'),
              #fileInput('files', label = 'Files', multiple = TRUE, accept = 'image/*'),
              
-             actionButton('start_annotating', 'Start annotating')
+             uiOutput("control_annotating")
+             
+      ),
+      column(6,
+             
+             uiOutput("picture"),
+             
+             htmlOutput("log")
       )
+      
     )
   )
 }

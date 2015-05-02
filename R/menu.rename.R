@@ -14,92 +14,142 @@
 #' @export 
 #' 
 
-menu.rename <- function(dir_initial, fbp, befCIP, ppl, yeardate, autor, updateProgress = NULL) {
-
-  initialize()
+menu.rename <- function(input, output, session, rvRename) {
   
-  if (is.function(updateProgress)) {
-    updateProgress(value = 0, detail = 'start renaming')
-  }
+  dir_final <- NULL
+  oldfiles <- NULL
+  befCIP <- 'CIP'
+  dir_initial <- NULL
+  fbp <- NULL
+  ppl <- NULL
+  yeardate <- NULL
+  autor <- NULL
+  part_plant <- NULL
+  listcipn <- NULL
   
-  part_plant = part.plant(ppl)
-  
-  
-  # create folder
-  
-  dir_final <- file.path(dir_initial, paste('renamed_', part_plant, sep = '')) 
-  
-  if(!file.exists(dir_final)) dir.create(dir_final, recursive = TRUE)
-  
-  
-  # copy files to new directory
-  
-  oldfiles=list.files(dir_initial, pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp")
-  
-  contador <- 0
-  
-  dput("List", file = paste(dir_final,"log.txt"))
-  
-  
-  if (length(oldfiles)){
+  shiny::observe({
     
-    file.copy(file.path(dir_initial,oldfiles), dir_final)
+    if(rvRename$stage != 1) {
+      return()
+    }
+    print('prepare')
     
-    listcipn = file.path(dir_initial,'cipnumber.txt')
+    rvRename$log <- "Start renaming files<br />"
     
-    if(file.exists(listcipn)) listcipn = readLines(listcipn) else listcipn = ''
-    
-    
-    # list into new directory
-    
-    oldfiles = list.files(dir_final, pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp")
-    
-    oldfiles = file.path(dir_final,oldfiles)
-    
-    keys <- paste(ppl,';',"Renaming")
-    
-    
-    for(i in 1:length(oldfiles)) {
+    isolate({
       
-      # main function: recursive rename
+      dir_initial <<- isolate(input$directory)
+      fbp <<- isolate(input$experiment_name)
+      ppl <<- isolate(input$organism)
+      yeardate <<- isolate(input$year)
+      autor <<- isolate(input$author)
+      part_plant <<- part.plant(ppl)
       
-      oldfiles[i] = file.verify.name(oldfiles[i])
+      initialize()
       
-      if (is.function(updateProgress)) {
-        updateProgress(value = i/length(oldfiles), detail = basename(oldfiles[i]))
-      } 	
+      # create folder
+      dir_final <<- file.path(dir_initial, paste('renamed_', part_plant, sep = ''))
+      unlink(dir_final, recursive = TRUE)
+      if(!file.exists(dir_final)) {
+        dir.create(dir_final, recursive = TRUE)
+      } else {
+        isolate({
+          rvRename$log <- paste(rvRename$log,
+                                paste('output directory "', dir_final, '" already exists. Stopping.', sep = ''),
+                                sep = '<br />')
+        })
+        return()
+      }
       
-      write(basename(oldfiles[i]),file=paste(dir_final,"log.txt"),append=TRUE)
+      # copy files to new directory
+      oldfiles <<- list.files(dir_initial, pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp")
+      dput("List", file = paste(dir_final,"log.txt"))
       
-      CIPN <- image.rename(oldfiles[i],listcipn)
+      # progress bar
+      #my_progress <- Progress$new()
+      #my_progress$initialize(session, min = 0, max = length(oldfiles))
       
+      if (length(oldfiles)) {
+        file.copy(file.path(dir_initial,oldfiles), dir_final)
+        listcipn <<- file.path(dir_initial,'cipnumber.txt')
+        if(file.exists(listcipn)) listcipn <<- readLines(listcipn) else listcipn <<- ''
+        
+        # list into new directory
+        oldfiles <<- list.files(dir_final, pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp")
+        oldfiles <<- file.path(dir_final,oldfiles)
+        
+        #### loop over files reactive
+        rvRename$n <- length(oldfiles)
+      }
+    })
+  })
+  
+  # worker step 2
+  shiny::observe({
+    
+    if(rvRename$stage != 2) {
+      return()
+    }
+    print("worker1")
+    isolate({ 
+#       prev_file_path <- file.path(getwd(), 'www', 'photoann')
+#       prev_file_name <- paste0('prev', basename(oldfiles[rvRename$i]))
+#       print(file.path(prev_file_path, prev_file_name))
+#       rvRename$files <- c(rvRename$files, prev_file_name)
+#       file.copy(oldfiles[rvRename$i], file.path(prev_file_path, prev_file_name))
       
-      if (length(CIPN)){			        
-           
+      #my_progress$set(value = rvRename$i, detail = basename(oldfiles[rvRename$i]))
+      #append_log(rvRename, paste('working on file: ', basename(oldfiles[rvRename$i])))
+      
+      Sys.sleep(0.5)
+      rvRename$log <- paste(rvRename$log,
+                            paste('working on file: ', basename(oldfiles[rvRename$i])),
+                            sep = '<br />')
+      
+      oldfiles[rvRename$i] <<- file.verify.name(oldfiles[rvRename$i])
+      write(basename(oldfiles[rvRename$i]),file=paste(dir_final,"log.txt"), append = TRUE)
+    })
+    
+  })
+  
+  # worker step 2
+  shiny::observe({
+    if(rvRename$stage != 3) {
+      return()
+    }
+    print("worker2")
+    
+    isolate({
+      CIPN <- image.rename(oldfiles[rvRename$i],listcipn)
+      #Sys.sleep(1)
+      #CIPN <- c()
+      
+      if (length(CIPN)){  
         file_exists = file.path(dir_final,list.files(dir_final, pattern = ".jpg|.png|.PNG|.JPG|.JPEG|.jpeg|.bmp"))
-        
         count=2
-        
         new_name = file.path(dir_final,paste(befCIP,CIPN,yeardate,part_plant,'.jpg',sep=''))
         
-        while(new_name %in% file_exists){ 		          
+        while(new_name %in% file_exists) { 		          
           new_name = file.path(dir_final,paste(befCIP,CIPN,yeardate,part_plant,count,'.jpg',sep=''))
           count=count+1
         }
         
-        file.rename(oldfiles[i],new_name)
-        
+        file.rename(oldfiles[rvRename$i],new_name)
         write(basename(new_name),file=paste(dir_final,"log.txt"),append=TRUE)
-        
-        #add.legend(yeardate,autor,new_name)
-        
-        contador= contador+1
-        
-      } 
+        rvRename$log <- paste(rvRename$log,
+                              paste0('suggested CIP number: ', paste(CIPN, collapse = ', ')),
+                              paste0('new name: ', basename(new_name)),
+                              sep = '<br />')
+      } else {
+        rvRename$log <- paste(rvRename$log,
+                              paste('could not identify CIP number.'),
+                              sep = '<br />')
+      }
       
       write("--------*--------",file=paste(dir_final,"log.txt"),append=TRUE)
-    }
+    })
     
-  }
+  })
   
+  #return(menu.rename.prepare)
 }

@@ -16,7 +16,11 @@ read.txt.from.image <- function(fp){
   
   cmd = paste(tfn,fp,fp)
   
-  system(cmd,ignore.stdout = TRUE,show.output.on.console = FALSE)
+  if(.Platform$OS.type == "unix") {
+    system(cmd,ignore.stdout = TRUE)
+  } else {
+    system(cmd,ignore.stdout = TRUE, show.output.on.console = FALSE)
+  }
   
   
   #read archive (several lines)

@@ -4,8 +4,7 @@
 \alias{menu.rename}
 \title{menu.rename}
 \usage{
-menu.rename(dir_initial, fbp, befCIP, ppl, yeardate, autor,
-  updateProgress = NULL)
+menu.rename(input, output, session, rvRename)
 }
 \arguments{
 \item{dir_initial}{}

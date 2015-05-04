@@ -34,7 +34,7 @@ menu.rename <- function(input, output, session, rvRename) {
     }
     print('prepare')
     
-    rvRename$log <- "Start renaming files<br />"
+    rvRename$log <- "Start renaming files\n"
     
     isolate({
       
@@ -49,14 +49,14 @@ menu.rename <- function(input, output, session, rvRename) {
       
       # create folder
       dir_final <<- file.path(dir_initial, paste('renamed_', part_plant, sep = ''))
-      unlink(dir_final, recursive = TRUE)
+      #unlink(dir_final, recursive = TRUE)
       if(!file.exists(dir_final)) {
         dir.create(dir_final, recursive = TRUE)
       } else {
         isolate({
           rvRename$log <- paste(rvRename$log,
                                 paste('output directory "', dir_final, '" already exists. Stopping.', sep = ''),
-                                sep = '<br />')
+                                sep = '\n')
         })
         return()
       }
@@ -103,8 +103,8 @@ menu.rename <- function(input, output, session, rvRename) {
       
       Sys.sleep(0.5)
       rvRename$log <- paste(rvRename$log,
-                            paste('working on file: ', basename(oldfiles[rvRename$i])),
-                            sep = '<br />')
+                            paste0('working on file (', rvRename$i, '/', rvRename$n, '): ', basename(oldfiles[rvRename$i])),
+                            sep = '\n')
       
       oldfiles[rvRename$i] <<- file.verify.name(oldfiles[rvRename$i])
       write(basename(oldfiles[rvRename$i]),file=paste(dir_final,"log.txt"), append = TRUE)
@@ -139,11 +139,11 @@ menu.rename <- function(input, output, session, rvRename) {
         rvRename$log <- paste(rvRename$log,
                               paste0('suggested CIP number: ', paste(CIPN, collapse = ', ')),
                               paste0('new name: ', basename(new_name)),
-                              sep = '<br />')
+                              sep = '\n')
       } else {
         rvRename$log <- paste(rvRename$log,
                               paste('could not identify CIP number.'),
-                              sep = '<br />')
+                              sep = '\n')
       }
       
       write("--------*--------",file=paste(dir_final,"log.txt"),append=TRUE)

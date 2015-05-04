@@ -54,7 +54,7 @@ io_inner <- function(input, output, session) {
           rvRename$isWorking <- FALSE
           rvRename$log <- paste(rvRename$log,
                                 'Finished renaming.',
-                                sep = '<br />')
+                                sep = '\n')
         } else {
           print('invalidate stage in looper')
           if(rvRename$stage == 3 || rvRename$stage == 1) {
@@ -74,7 +74,8 @@ io_inner <- function(input, output, session) {
   
   output$log <- renderText({
     print("text")
-    rvRename$log
+    
+    paste0('<textarea readonly rows="15" style="width:100%; margin: 5px;">', rvRename$log, '</textarea>')
   })
   
   cancel.onSessionEnded <- session$onSessionEnded(function() {
